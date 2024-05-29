@@ -1,4 +1,4 @@
-import NoteView from '@/components/NoteView';
+import NoteView from '@/views/NoteView';
 import { createClient } from '@/utils/supabase/server';
 
 export default async function NotePage({ params }: { params: { id: string } }) {
