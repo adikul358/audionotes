@@ -48,12 +48,28 @@ export async function POST(request: Request) {
     })
   })).json()
 
-  console.log(
-    process.env.AWS_ACCESS_KEY_ID,
-    process.env.AWS_SECRET_ACCESS_KEY,
-    process.env.AWS_REGION,
-    process.env.AWS_BUCKET_NAME
-  )
+	// Title API Call
+  var heads = new Headers({
+    "Authorization": `Bearer ${process.env["OPENAI_API_KEY"]}`,
+    "Content-Type": "application/json"
+  })
+  var title = await (await fetch(" https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: heads,
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo-16k",
+      messages: [
+        {
+          role: "system",
+          content: "You are an intelligent assistant that makes a two to ten word title for a given text summary"
+        },
+        {
+          role: "user",
+          content: transcript.text
+        }
+      ]
+    })
+  })).json()
 
   // S3 API Call
   const s3Client = new S3Client({ 
@@ -64,7 +80,6 @@ export async function POST(request: Request) {
     region: process.env.AWS_REGION 
   })
   const filename = moment(new Date()).format("x") + ".wav"
-  console.log(filename)
   const arrayBuffer = await fileBlob.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
@@ -78,9 +93,13 @@ export async function POST(request: Request) {
 
 
   const s3res = await s3Client.send(uploadCommand)
-  console.log(s3res)
 
+  console.log("/api/transcribe", title)
+  console.log("/api/transcribe", transcript)
+  console.log("/api/transcribe", summary)
+  console.log("/api/transcribe", `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`)
 	return NextResponse.json({
+		title: title.choices[0].message.content,
 		transcript: transcript.text,
 		summary: summary.choices[0].message.content,
     audio_url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`
