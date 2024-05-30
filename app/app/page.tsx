@@ -2,7 +2,9 @@
 
 import RecordControls from "@/components/RecordControls";
 import TabBar from "@/components/TabBar";
+import { redirect } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
+require('dotenv').config()
 
 export default function AppPage() {
   const [tab, setTab] = useState("record")
@@ -19,6 +21,18 @@ export default function AppPage() {
 		},
 	]
 
+  const transcribe = async (audioBlob: Blob) => {
+    const formData = new FormData()
+    formData.append("file", audioBlob)
+
+    const res = await (await fetch("/api/transcribe", {
+      method: "POST",
+      body: formData
+    })).json()
+
+    console.log(res.transcription)
+
+  }
 
   const [stream, setStream] = useState<MediaStream>();
   const [isPaused, setIsPaused] = useState(false);
@@ -50,7 +64,6 @@ export default function AppPage() {
       console.log(err.message);
     }
   };
-
   const pauseRecording = () => {
     if (!isPaused) {
       setIsPaused(true)
@@ -60,7 +73,11 @@ export default function AppPage() {
       mediaRecorder.current.resume();
     }
   };
-
+  const cancelRecording = () => {
+    setIsRecording(false);
+    setIsPaused(false);
+    mediaRecorder.current.stop();
+  };
   const stopRecording = () => {
     setIsRecording(false);
     setIsPaused(false);
@@ -68,17 +85,14 @@ export default function AppPage() {
     mediaRecorder.current.onstop = () => {
       const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
       setAudioUrl(URL.createObjectURL(audioBlob));
-      alert(audioUrl);
+      console.log(audioUrl);
+      transcribe(audioBlob)
       setAudioChunks([]);
     };
     stream.getTracks()[0].stop();
   };
 
-  const cancelRecording = () => {
-    setIsRecording(false);
-    setIsPaused(false);
-    mediaRecorder.current.stop();
-  };
+  
 
   return (
       <div className="flex flex-col relative flex-grow justify-center items-center">
@@ -109,7 +123,7 @@ export default function AppPage() {
 
             <span className="my-3 text-gray-500">or</span>
 
-            <form method="POST" className="flex w-full">
+            <form className="flex w-full">
               <input type="text" className="flex-grow px-6 py-2 border-2 border-gray-500 rounded-lg mr-3" placeholder="Enter Audio or YouTube URL" />
               <button type="submit" className="w-12 h-12 rounded-lg bg-blue-800 text-white flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-[28px]">

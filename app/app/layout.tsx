@@ -11,9 +11,7 @@ export default async function AppLayout({
 }) {
 	const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return redirect("/signin");
