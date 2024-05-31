@@ -6,8 +6,11 @@ import TabBar from '@/components/TabBar';
 import ChatMessage, { ChatMessageProps } from '@/components/ChatMessage';
 import LoadingIcon from '@/components/Icons/LoadingIcon';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { StarIcon } from '@/components/Icons/StarIcon';
+import checkUnlocked from '@/utils/supabase/checkUnlocked';
 
 interface NoteViewProps {
+  unlocked: boolean,
   id: string,
   title: string,
   date: Date,
@@ -19,6 +22,7 @@ interface NoteViewProps {
 
 const NoteView: React.FC<NoteViewProps> = ({
   id,
+	unlocked,
   title,
   date,
   summary,
@@ -26,6 +30,7 @@ const NoteView: React.FC<NoteViewProps> = ({
   audio_url,
 	chat
 }) => {
+
 	const inputRef = useRef(null)
   const [chatState, setChatState] = useState<ChatMessageProps[]>(chat)
   const [loading, setLoading] = useState(false)
@@ -99,8 +104,6 @@ const NoteView: React.FC<NoteViewProps> = ({
 		setContent(contentRes)
 	}
   
-  
-
   const [tab, setTab] = useState("summary")
   const tabs = [
 		{
@@ -115,13 +118,31 @@ const NoteView: React.FC<NoteViewProps> = ({
 		},
 		{
 			key: "content",
-			label: "Content",
-			onClick: (key: string) => setTab(key),
+			label: unlocked ? "Content" : <>
+				Content
+        <StarIcon className="ml-2 size-6 text-yellow-300" />
+			</>,
+			onClick: (key: string) => {
+        if (unlocked) {
+          setTab(key)
+        } else {
+          alert("Generating content from notes is a paid feature. Please pay to unlock all features.")
+        }
+      },
 		},
 		{
 			key: "chat",
-			label: "Chat",
-			onClick: (key: string) => setTab(key),
+			label: unlocked ? "Chat" : <>
+				Chat
+        <StarIcon className="ml-2 size-6 text-yellow-300" />
+			</>,
+			onClick: (key: string) => {
+        if (unlocked) {
+          setTab(key)
+        } else {
+          alert("Chatting with notes is a paid feature. Please pay to unlock all features.")
+        }
+      },
 		},
 	]
 

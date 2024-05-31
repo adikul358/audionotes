@@ -1,5 +1,6 @@
 import NoteView from '@/views/NoteView';
 import { createClient } from '@/utils/supabase/server';
+import checkUnlocked from '@/utils/supabase/checkUnlocked';
 
 interface NoteItem {
 	title: string,
@@ -21,7 +22,8 @@ export default async function NotePage({ params }: { params: { id: string } }) {
 		.eq('note_id', params.id)
 		.order('timestamp', { ascending: true })
 
-	console.log(messagesRaw)
+	const unlocked = await checkUnlocked()
+
 	const { title, transcript, summary, audio_url, timestamp } = notes[0]
 	var messages = messagesRaw.map(v => {
 		return {
@@ -37,6 +39,7 @@ export default async function NotePage({ params }: { params: { id: string } }) {
 
   return (
 		<NoteView
+			unlocked={unlocked}
 			id={params.id} 
 			title={title} 
 			date={new Date(timestamp)} 
