@@ -42,6 +42,19 @@ export default function SignIn({
       password,
     });
 
+    const { data: { user } } = await supabase.auth.getUser()
+    const checkInserted = await supabase.from("users").select()
+    if (checkInserted.data.length == 0) {
+      const dbRes = await supabase
+        .from("users")
+        .insert([{
+          id: user.id,
+          email: user.email,
+        }])
+      if (dbRes.error) { console.log(dbRes.error) }
+    }
+    if (checkInserted.error) { console.log(checkInserted.error) }
+
     if (error) {
       console.log(error)
       return redirect("/signin?message=Could not authenticate user");
@@ -58,7 +71,7 @@ export default function SignIn({
     const password = formData.get("password") as string;
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signUp({
+    let { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {

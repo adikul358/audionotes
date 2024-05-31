@@ -10,7 +10,7 @@ import { useState, useRef, DragEventHandler } from "react";
 require('dotenv').config()
 
 export default function AppPage() {
-  const [tab, setTab] = useState("upload")
+  const [tab, setTab] = useState("record")
   const tabs = [
 		{
 			key: "record",
