@@ -3,7 +3,10 @@ import { createClient } from '@/utils/supabase/server';
 
 export default async function Notes() {
   const supabase = createClient();
-  const { data: notes } = await supabase.from("notes").select();
+  const { data: notes } = await supabase
+    .from("notes")
+    .select()
+    .order('timestamp', {ascending: false})
 
   return (
     <div className="grid grid-cols-3 gap-3 animate-in">

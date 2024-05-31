@@ -5,7 +5,7 @@ import RecordControls from "@/components/RecordControls";
 import TabBar from "@/components/TabBar";
 import addNote from "@/utils/supabase/addNote";
 import { useRouter } from "next/navigation";
-import { useState, useRef, DragEventHandler } from "react";
+import { useState, useRef, DragEventHandler, ChangeEventHandler } from "react";
 
 require('dotenv').config()
 
@@ -82,8 +82,8 @@ export default function AppPage() {
   const [fileError, setFileError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null)
   const fileDragOver: DragEventHandler<HTMLDivElement> = (e) => {
-    event.stopPropagation();
-    event.preventDefault();
+    e.stopPropagation();
+    e.preventDefault();
     setFileDragged(true)
   }
   const fileDragLeave: DragEventHandler<HTMLDivElement> = () => {
@@ -93,6 +93,16 @@ export default function AppPage() {
     e.preventDefault()
     setFileDragged(false)
     const file = e.dataTransfer.files[0];
+    processFile(file)
+  }
+  const fileSubmit: ChangeEventHandler<HTMLInputElement> = (e) => {
+    e.preventDefault()
+    setFileDragged(false)
+    const file = e.target.files[0];
+    processFile(file)
+    
+  }
+  const processFile = (file: File) => {
     const fileSize = file.size;
     const fileType = file.type;
     let sizeInMB = (fileSize / (1024 * 1024));
@@ -108,9 +118,14 @@ export default function AppPage() {
       return setFileError("Maximum file size is 50 MB")
     }
     
-    file.arrayBuffer().then((buff) => {
+    file.arrayBuffer().then(async (buff) => {
       const audioBlob = new Blob([buff], { type: fileType })
-      processAPI(audioBlob)
+      setProcessing("upload")
+      setTimeout(() => {
+        setProcessing("process")
+      }, 1500)
+      const id = await processAPI(audioBlob)
+      router.push(`/app/note/${id}`)
     })
   }
 
@@ -212,7 +227,7 @@ export default function AppPage() {
               {fileError !==  "" && 
                 <span className="mt-2 font-semibold text-red-600">{fileError}</span>
               }
-              <input type="file" hidden ref={fileInputRef} />
+              <input type="file" hidden ref={fileInputRef} onChange={fileSubmit} />
             </>)}
           </div>
 
@@ -233,7 +248,7 @@ export default function AppPage() {
     </div>
   ) : (
     <div className="flex flex-col relative flex-grow justify-center items-center">
-      <LoadingIcon className="size-[72px] text-blue-800 mb-4" />
+      <LoadingIcon className="size-[72px] text-blue-800 mb-8" />
       {processing == "fetch" && 
         <span className="text-xl font-semibold">Fetching</span>
       }
