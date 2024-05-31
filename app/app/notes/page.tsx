@@ -10,6 +10,7 @@ export default async function Notes() {
 
   return (
     <div className="grid grid-cols-3 gap-3 animate-in">
+      {notes.length == 0 && <h1 className="text-xl font-semibold">No Notes</h1>  }
       {notes.map(({id, title, summary, transcript, timestamp}) => (
         <NoteCard 
           id={id} 
