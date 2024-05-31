@@ -4,10 +4,9 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-const ngrokUrl = "https://d280-2401-4900-1f35-4a2d-3c7d-bea1-fecc-88e2.ngrok-free.app"
 
 export const metadata = {
-  metadataBase: new URL(ngrokUrl),
+  metadataBase: new URL(defaultUrl),
   title: "AudioNotes - Liftoff",
   description: "Capitalise Your Voice",
 };
