@@ -132,7 +132,7 @@ export default function SignIn({
           </form>
         </div>
       </div>
-      <div className="w-full h-screen bg-gradient-to-tr from-blue-800 to-sky-300 z-0"></div>
+      <div className="w-full h-screen bg-home-gradient z-0"></div>
     </div>
   );
 }
