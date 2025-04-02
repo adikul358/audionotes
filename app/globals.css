@@ -16,3 +16,8 @@
     transform: translateY(0);
   }
 }
+
+.bg-home-gradient {
+  background: rgb(0,5,118);
+  background: linear-gradient(30deg, rgba(0,5,118,1) 0%, rgba(73,157,255,1) 100%);
+}

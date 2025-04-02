@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <html>
       <head>
         <GoogleAnalytics gaId="G-QXV7DLRBQ2" />
         <link rel="icon" href="/favicon.ico" />
@@ -28,6 +28,6 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         {children}
       </body>
-    </>
+    </html>
   );
 }

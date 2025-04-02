@@ -1,9 +1,9 @@
-import AuthButton from "@/components/AuthButton";
-import SideNav from "@/components/SideNav";
-import checkUnlocked from "@/utils/supabase/checkUnlocked";
-import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import checkUnlocked from "@/utils/supabase/checkUnlocked";
+import { createClient } from "@/utils/supabase/server";
+import SideNav from "@/components/SideNav";
+import AuthButton from "@/components/AuthButton";
 
 export default async function AppLayout({
   children,
