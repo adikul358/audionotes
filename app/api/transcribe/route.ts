@@ -94,10 +94,7 @@ export async function POST(request: Request) {
 
   const s3res = await s3Client.send(uploadCommand)
 
-  console.log("/api/transcribe", title)
-  console.log("/api/transcribe", transcript)
-  console.log("/api/transcribe", summary)
-  console.log("/api/transcribe", `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`)
+  console.log("/api/transcribe debug", {title, transcript, summary, aws: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`})
 	return NextResponse.json({
 		title: title.choices[0].message.content,
 		transcript: transcript.text,

@@ -2,7 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import moment from "moment";
 
-export default async function addNote (noteData: {
+export default async function addNote(noteData: {
 	title: string,
 	summary: string,
 	transcript: string,
