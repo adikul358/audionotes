@@ -4,7 +4,7 @@ export default async function Index() {
       <img src="/home-logo.svg" alt="" className="h-64 max-md:h-48 mb-12 -ml-6" />
 
       <a href="/signin">
-        <button className="bg-white text-blue-800 hover:text-white hover:bg-blue-800 rounded-xl font-semibold px-6 py-2 text-lg hover:shadow-white/50 shadow-black/30 shadow-xl ease-out duration-300 transition-all">Get Started</button>
+        <button className=" text-white bg-[#2B5DC6] rounded-xl font-semibold px-6 py-2 text-lg shadow-white/50 hover:shadow-white/40 hover:shadow-xl shadow-md ease-out duration-300 transition-all">Get Started</button>
       </a>
 
     </div>
